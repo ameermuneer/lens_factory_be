@@ -13,7 +13,7 @@ class UpdateInvoiceRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,35 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'lens_id'=> 'required|integer|exists:lenses',
+            'customer'=> 'required|string',
+
+            'rx'=> 'nullable|numeric',
+            'ry'=> 'nullable|numeric',
+            'rz'=> 'nullable|integer',
+            'rb'=> 'nullable|integer',
+
+            'lx'=> 'nullable|numeric',
+            'ly'=> 'nullable|numeric',
+            'lz'=> 'nullable|integer',
+            'lb'=> 'nullable|integer',
+
+            'add1'=> 'nullable|numeric',
+            'add2'=> 'nullable|numeric',
+
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'customer' => 'الاسم' ,'lens_id' => ' العدسة' ,
         ];
     }
 }

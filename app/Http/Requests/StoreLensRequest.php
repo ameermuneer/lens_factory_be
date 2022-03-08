@@ -13,7 +13,7 @@ class StoreLensRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,23 @@ class StoreLensRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name'=> 'required|string|unique:lenses,name',
+            'raw_id' => 'required|integer'
+
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'name' => 'اسم العدسة',
+            'raw_id' => 'الخام'
         ];
     }
 }

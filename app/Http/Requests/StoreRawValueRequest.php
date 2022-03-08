@@ -24,7 +24,7 @@ class StoreRawValueRequest extends FormRequest
     public function rules()
     {
         return [
-            'raw_id'=> 'required|integer|exists:raws',
+            'raw_id'=> 'required|integer|exists:raws,id',
             'power'=> 'required|numeric',
             'value'=> 'required|numeric',
         ];
@@ -39,7 +39,7 @@ class StoreRawValueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'title' => 'الخام',
+            'raw_id' => 'الخام','value' => 'قيمة power',
         ];
     }
 }

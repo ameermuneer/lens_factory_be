@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LensResource extends JsonResource
+class RawValueResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,9 @@ class LensResource extends JsonResource
     {
         return [
             "id" => $this->id ,
-            "name"=> $this->name ,
-            "raw_title"=> $this->raw->title ,
+            "power"=> $this->power ,
+            "value"=> $this->value ,
             "raw"=> $this->whenLoaded('raw') ,
-            "bases" => $this->whenLoaded('bases') ,
             "created_at"=> $this->created_at ,
             "updated_at"=> $this->updated_at
         ] ;

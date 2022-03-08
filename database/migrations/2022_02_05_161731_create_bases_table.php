@@ -17,7 +17,7 @@ class CreateBasesTable extends Migration
             $table->id();
             $table->integer('lens_id') ;
             $table->integer('base') ;
-            $table->float('true_base') ;
+            $table->decimal('true_base') ;
             $table->timestamps();
         });
     }

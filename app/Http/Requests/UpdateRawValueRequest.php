@@ -13,7 +13,7 @@ class UpdateRawValueRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,22 @@ class UpdateRawValueRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'raw_id'=> 'required|integer|exists:raws,id',
+            'power'=> 'required|numeric',
+            'value'=> 'required|numeric',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'raw_id' => 'الخام','value' => 'قيمة power',
         ];
     }
 }

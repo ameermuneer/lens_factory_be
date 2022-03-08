@@ -15,8 +15,8 @@ class CreateRawsTable extends Migration
     {
         Schema::create('raws', function (Blueprint $table) {
             $table->id();
-            $table->float('title', 8, 2)->unsigned(false)->nullable();
-            $table->softDeletes() ;
+            $table->decimal('title', 8, 2)->unsigned(false)->nullable();
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }

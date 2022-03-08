@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RawResource;
 use App\Models\Raw;
 use App\Http\Requests\StoreRawRequest;
 use App\Http\Requests\UpdateRawRequest;
+use App\Models\RawValues;
+use App\Traits\ResponseMessage;
 
 class RawController extends Controller
 {
+    use ResponseMessage ;
     /**
      * Display a listing of the resource.
      *
@@ -15,54 +19,44 @@ class RawController extends Controller
      */
     public function index()
     {
-        //
+        return  RawResource::collection(Raw::orderBy('title')->paginate(20)) ;
     }
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreRawRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreRawRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Raw  $raw
-     * @return \Illuminate\Http\Response
-     */
     public function show(Raw $raw)
     {
-        //
+        return $this->success(new RawResource($raw)) ;
+    }
+
+    public function showWithValues(Raw $raw)
+    {
+        return $this->success(new RawResource($raw->load('values'))) ;
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateRawRequest  $request
-     * @param  \App\Models\Raw  $raw
-     * @return \Illuminate\Http\Response
-     */
+
+
+
+    public function store(StoreRawRequest $request)
+    {
+        Raw::create($request->validated()) ;
+        return $this->success('','a') ;
+    }
+
+
     public function update(UpdateRawRequest $request, Raw $raw)
     {
-        //
+        $raw->update($request->validated()) ;
+        return $this->success('','u') ;
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Raw  $raw
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Raw $raw)
     {
-        //
+        if ($raw->values()->exists())
+            return $this->errors(422,['هذا الخام يحتوي على عناصر- قم بمسحها اولا']) ;
+        else
+            $raw->delete() ;
+        return $this->success('','d') ;
+
     }
 }

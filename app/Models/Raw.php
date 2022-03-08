@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Raw extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     protected $guarded = ['id'];
 
-    public function raw_values(){
-        $this->hasMany(RawValues::class) ;
+    public function values(){
+        return $this->hasMany(RawValues::class) ;
+    }
+    public function lenses(){
+        return $this->hasMany(Lens::class) ;
     }
 }

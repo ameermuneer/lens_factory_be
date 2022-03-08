@@ -16,7 +16,7 @@ class CreateLensesTable extends Migration
         Schema::create('lenses', function (Blueprint $table) {
             $table->id();
             $table->string('name') ;
-            $table->softDeletes() ;
+            $table->string('raw_id') ;
             $table->timestamps();
         });
     }

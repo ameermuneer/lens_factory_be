@@ -16,9 +16,8 @@ class CreateRawValuesTable extends Migration
         Schema::create('raw_values', function (Blueprint $table) {
             $table->id();
             $table->integer('raw_id') ;
-            $table->float('power', 8, 2)->unsigned(false)->nullable();
-            $table->float('value', 8, 2)->unsigned(false)->nullable();
-            $table->softDeletes() ;
+            $table->decimal('power', 8, 2)->unsigned(false)->nullable();
+            $table->decimal('value', 8, 2)->unsigned(false)->nullable();
             $table->timestamps();
         });
     }

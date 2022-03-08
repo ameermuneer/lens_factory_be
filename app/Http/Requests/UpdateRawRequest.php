@@ -11,6 +11,7 @@ class UpdateRawRequest extends FormRequest
      *
      * @return bool
      */
+
     public function authorize()
     {
         return true;
@@ -23,8 +24,10 @@ class UpdateRawRequest extends FormRequest
      */
     public function rules()
     {
+//        dd($this->route('raw')->title) ;
         return [
-            'title'=> 'required|numeric|max:20',
+            'title'=> 'required|numeric|max:20|unique:raws,title,'. floatval($this->route('raw')->id),
+            'active'=> 'required|boolean',
         ];
     }
 
@@ -38,6 +41,7 @@ class UpdateRawRequest extends FormRequest
     {
         return [
             'title' => 'الخام',
+            'active' => 'حالة الخام'
         ];
     }
 }

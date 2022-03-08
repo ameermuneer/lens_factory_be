@@ -24,7 +24,8 @@ class StoreRawRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'=> 'required|numeric|min:0.00|max:20',
+            'title'=> 'required|numeric|max:20|unique:raws,title',
+            'active'=> 'required|boolean',
         ];
     }
 
@@ -38,6 +39,7 @@ class StoreRawRequest extends FormRequest
     {
         return [
             'title' => 'الخام',
+            'active' => 'حالة الخام'
         ];
     }
 }

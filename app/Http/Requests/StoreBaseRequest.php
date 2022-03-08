@@ -13,7 +13,7 @@ class StoreBaseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,23 @@ class StoreBaseRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'lens_id'=> 'required|integer',
+            'base'=> 'required|integer',
+            'true_base'=> 'required|numeric',
+
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
+        ];
+    }
+    public function attributes()
+    {
+        return [
+
         ];
     }
 }
