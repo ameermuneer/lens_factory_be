@@ -26,21 +26,17 @@ class InvoiceService
     public function __construct($data)
     {
         $this->data = $data ;
-//        $this->rx = $data['rx'] ;
-//        $this->ry = $data['ry'] ;
-//        $this->rz = $data['rz'] ;
-//        $this->rb = $data['rb'] ;
-//
-//        $this->lx = $data['lx'] ;
-//        $this->ly = $data['ly'] ;
-//        $this->lz = $data['lz'] ;
-//        $this->lb = $data['lb'] ;
-//
-//        $this->add1 = $data['add1'] ;
-//        $this->add2 = $data['add2'] ;
         $this->lens = Lens::find($data['lens_id']) ;
         $this->customer = $data['customer'] ;
 
+    }
+    public function create(){
+        $this->calculateInvoice() ;
+        Invoice::create($this->data);
+    }
+    public function update($invoice){
+        $this->calculateInvoice() ;
+        $invoice->update($this->data);
     }
     public function calculateInvoice(){
 
@@ -49,33 +45,54 @@ class InvoiceService
         $this->validateXYQuarter_LR() ;
         $this->validateBaseRequired_LR() ;
         $this->findTrueBaseofLens_LR() ;
+        $this->setupFinalValues();
         // validate if we need to replace x , y with table of 1.56
         $this->processActiveRaw_LR() ;
         $this->setNullToZero() ;
         // calculate
         $this->calculateBiggerSmaller_LR() ;
-        Invoice::create($this->data);
+
 
     }
     private function calculateBiggerSmaller_LR(){
-        $this->calculateBiggerSmaller('l') ;
         $this->calculateBiggerSmaller('r') ;
+        $this->calculateBiggerSmaller('l') ;
+
     }
     private function calculateBiggerSmaller($side){
         $leg = $side == 'r' ? $this->R : $this->L ;
 
         if ($leg ) {
-             $bigger = $this->data[$side.'b_true'] - $this->data[$side.'x'] ;
-             $smaller = $bigger - $this->data[$side.'y'] ;
+             $bigger = $this->data[$side.'b_true'] - $this->data['final_'.$side.'x'] ;
+             $smaller = $bigger - $this->data['final_'.$side.'y'] ;
              $this->data[$side.'_smaller'] = $smaller ;
              $this->data[$side.'_bigger'] = $bigger ;
         }
 
     }
+    private function setupFinalValues(){
+        if (isset($this->data['rx']))
+            $this->data['final_rx'] = $this->data['rx'] ;
+        else
+            $this->data['final_rx'] = 0 ;
+        if (isset($this->data['ry']))
+            $this->data['final_ry'] = $this->data['ry'] ;
+        else
+            $this->data['final_ry'] = 0 ;
+        if (isset($this->data['lx']))
+            $this->data['final_lx'] = $this->data['lx'] ;
+        else
+            $this->data['final_lx'] = 0 ;
+        if (isset($this->data['ly']))
+            $this->data['final_ly'] = $this->data['ly'] ;
+        else
+            $this->data['final_ly'] = 0 ;
+    }
 
     private function processActiveRaw_LR(){
-        $this->processActiveRaw('l') ;
         $this->processActiveRaw('r') ;
+        $this->processActiveRaw('l') ;
+
     }
     private function processActiveRaw($side){
         $leg = $side == 'r' ? $this->R : $this->L ;
@@ -88,22 +105,18 @@ class InvoiceService
 
                     if (!$rawValue)
                         abort($this->errors(422,[strtoupper($side).'x' .'غير صحيحة لهذه المادة الخام'])) ;
-
-//                    $this->err->push(strtoupper($side).'x' .'غير صحيحة لهذه المادة الخام') ;
                     else
                         // replace x by new one
-                        $this->data[$side.'x'] = $rawValue->value ;
+                        $this->data['final_'.$side.'x'] = $rawValue->value ;
 
                 }
                 if (isset($this->data[$side.'y'])){
                     $rawValue = $raw->values()->where('power',$this->data[$side.'y'])->first() ;
                     if (!$rawValue)
                         abort($this->errors(422,[strtoupper($side).'y' .'غير صحيحة لهذه المادة الخام'])) ;
-
-//                    $this->err->push(strtoupper($side).'y' .'غير صحيحة لهذه المادة الخام') ;
                     else
                         // replace y by new one
-                        $this->data[$side.'y'] = $rawValue->value ;
+                        $this->data['final_'.$side.'y'] = $rawValue->value ;
                 }
 
             }
@@ -111,8 +124,9 @@ class InvoiceService
     }
 
     private function validateXYQuarter_LR(){
-        $this->validateXYQuarter('l') ;
         $this->validateXYQuarter('r') ;
+        $this->validateXYQuarter('l') ;
+
     }
     private function validateXYQuarter($side){
         $leg = $side == 'r' ? $this->R : $this->L ;
@@ -135,8 +149,9 @@ class InvoiceService
 
     }
     private function validateBaseRequired_LR(){
-        $this->validateBaseRequired('l') ;
         $this->validateBaseRequired('r') ;
+        $this->validateBaseRequired('l') ;
+
     }
     private function validateBaseRequired($side){
         $leg = $side == 'r' ? $this->R : $this->L ;
@@ -146,10 +161,11 @@ class InvoiceService
         }
     }
     private function findTrueBaseofLens_LR(){
-        if ($this->L)
-            $this->findTrueBaseofLens('l') ;
         if ($this->R)
             $this->findTrueBaseofLens('r') ;
+        if ($this->L)
+            $this->findTrueBaseofLens('l') ;
+
     }
     private function findTrueBaseofLens($side){
         $base = $this->lens->bases()->where('base',$this->data[$side.'b'])->first() ;
@@ -166,8 +182,9 @@ class InvoiceService
     private function validateLRXYNull(){
         if (!isset($this->L) && !isset($this->R))
             abort($this->errors(422,[' L و R  فارغة'])) ;
-        $this->validateXYNull('l') ;
         $this->validateXYNull('r') ;
+        $this->validateXYNull('l') ;
+
     }
     private function validateXYNull($side){
         $leg = $side == 'r' ? $this->R : $this->L ;
@@ -175,14 +192,6 @@ class InvoiceService
             abort($this->errors(422,[strtoupper($side).'x' . 'و' . strtoupper($side).'y' . ' فارغة'])) ;
         }
     }
-//    if (!isset($this->L) && !isset($this->R))
-//            $this->err->push(' L و R  فارغة') ;
-//        if ($this->R &&  (!isset($this->rx) && !isset($this->ry))){
-//            $this->err->push(' Rx و Ry  فارغة') ;
-//        }
-//        if ($this->L &&  (!isset($this->lx) && !isset($this->ly))){
-//            $this->err->push(' Lx و Ly  فارغة') ;
-//        }
 
     // set nulls to zero
     public function setNullToZero(){
@@ -190,16 +199,28 @@ class InvoiceService
             $this->data['rx']= 0 ;
         if (!isset($this->data['ry']))
             $this->data['ry'] = 0 ;
+        if (!isset($this->data['rz']))
+            $this->data['rz'] = 0 ;
+
         if (!isset($this->data['lx']))
             $this->data['lx'] = 0 ;
         if (!isset($this->data['ly']))
             $this->data['ly'] = 0 ;
+        if (!isset($this->data['lz']))
+            $this->data['lz'] = 0 ;
+
+        if (!isset($this->data['add1']))
+            $this->data['add1'] = 0 ;
+        if (!isset($this->data['add2']))
+            $this->data['add2'] = 0 ;
+
     }
     private function setSides(){
-        if ($this->validateNullSide('l'))
-            $this->L = true ;
         if ($this->validateNullSide('r'))
             $this->R = true ;
+        if ($this->validateNullSide('l'))
+            $this->L = true ;
+
     }
     private function validateNullSide($side){
         if ( isset($this->data[$side.'x']) ) {

@@ -13,4 +13,7 @@ class Invoice extends Model
     public function lens(){
         return $this->belongsTo(Lens::class) ;
     }
+    public function lens_name() {
+        return $this->belongsTo(Lens::class)->select(['name']);
+    }
 }

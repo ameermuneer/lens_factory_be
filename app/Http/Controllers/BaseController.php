@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBaseRequest;
 use App\Http\Requests\UpdateBaseRequest;
 use App\Http\Resources\BaseResource;
 use App\Models\Base;
+use App\Models\Lens;
 use App\Traits\ResponseMessage;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,10 @@ class BaseController extends Controller
     public function show(Base $base)
     {
         return new BaseResource($base->load('lens')) ;
+    }
+    public function showBases(Lens $lens)
+    {
+        return  BaseResource::collection($lens->bases) ;
     }
 
 

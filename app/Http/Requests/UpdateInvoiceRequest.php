@@ -24,7 +24,7 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'lens_id'=> 'required|integer|exists:lenses',
+            'lens_id'=> 'required|integer|exists:lenses,id',
             'customer'=> 'required|string',
 
             'rx'=> 'nullable|numeric',

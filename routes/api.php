@@ -30,6 +30,7 @@ Route::post('/raw/{raw}',[RawController::class,'update']) ;
 Route::delete('/raw/{raw}',[RawController::class,'destroy']) ;
 
 Route::get('/lens',[LensController::class,'index']) ;
+Route::get('/lenses_menu',[LensController::class,'index_menu']) ;
 Route::get('/lens/{lens}',[LensController::class,'show']) ;
 Route::get('/lens_with_bases/{lens}',[LensController::class,'showWithBases']) ;
 Route::post('/lens',[LensController::class,'store']) ;
@@ -45,11 +46,13 @@ Route::delete('/rawValue/{rawValue}',[RawValuesController::class,'destroy']) ;
 Route::post('/base',[BaseController::class,'store']) ;
 Route::post('/base/{base}',[BaseController::class,'update']) ;
 Route::get('/base/{base}',[BaseController::class,'show']) ;
+Route::get('/base/lens/{lens}',[BaseController::class,'showBases']) ;
 Route::delete('/base/{base}',[BaseController::class,'destroy']) ;
 
 
 Route::get('/invoice',[InvoiceController::class,'index']) ;
 Route::get('/invoice/{invoice}',[InvoiceController::class,'show']) ;
+Route::post('/invoice/search',[InvoiceController::class,'search']) ;
 Route::post('/invoice',[InvoiceController::class,'store']) ;
 Route::post('/invoice/{invoice}',[InvoiceController::class,'update']) ;
 Route::delete('/invoice/{invoice}',[InvoiceController::class,'destroy']) ;

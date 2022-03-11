@@ -20,6 +20,11 @@ class LensController extends Controller
 //        return Lens::with('raw')->paginate() ;
         return LensResource::collection(Lens::with('raw')->paginate());
     }
+    public function index_menu()
+    {
+//        return Lens::with('raw')->paginate() ;
+        return Lens::all();
+    }
     public function show(Lens $lens)
     {
         return new LensResource($lens->load('raw'));
